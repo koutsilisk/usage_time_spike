@@ -2,16 +2,14 @@
 from sklearn.cluster import kmeans_plusplus
 from sklearn.datasets import make_blobs
 import matplotlib.pyplot as plt
-from time import process_time_ns
+from time import process_time
 
 
-def run():
+def run(n_samples, n_components):
 
-    t1_start = process_time_ns()
+    t1_start = process_time()
 
     # Generate sample data
-    n_samples = 4000
-    n_components = 4
 
     X, y_true = make_blobs(
         n_samples=n_samples, centers=n_components, cluster_std=0.60, random_state=0
@@ -34,12 +32,12 @@ def run():
     plt.xticks([])
     plt.yticks([])
 
-    t1_stop = process_time_ns()
+    t1_stop = process_time()
 
-    print(f"Elapsed time during the whole program in nanoseconds:{t1_stop - t1_start}")
+    print(f"Elapsed time during the whole program in seconds:{t1_stop - t1_start}")
     return
 
 
 if __name__ == "__main__":
-    run()
+    run(4000000, 4)
     plt.show()
