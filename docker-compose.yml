@@ -1,0 +1,32 @@
+services:
+  redis:
+    image: redis:6.2.6-alpine
+    command: redis-server --save 60 1 --loglevel warning
+    restart: always
+    ports:
+      - 6379:6379
+
+  worker:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    restart: always
+    command: celery --app=app.celery worker --loglevel=INFO
+    depends_on:
+      - redis
+
+  api:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      FLASK_DEBUG: 1
+    ports:
+      - 5000:5000
+    command: flask run --host=0.0.0.0 --port=5000
+    stop_signal: SIGINT
+    restart: always
