@@ -35,7 +35,6 @@ def run(n_samples, n_components):
     t1_stop = process_time()
 
     print(f"Elapsed time during the whole program in seconds:{t1_stop - t1_start}")
-    return
 
 
 if __name__ == "__main__":

@@ -12,8 +12,8 @@ celery = Celery(app.name, backend="redis://redis:6379/0", broker="redis://redis:
 
 
 @celery.task
-def run_kmeans():
-    res = run(400000, 4)
+def run_kmeans(n_samples, n_components):
+    run(n_samples, n_components)
 
 
 @task_prerun.connect
@@ -29,7 +29,7 @@ def task_postrun_handler(
         cost = process_time() - d.pop(task_id)
     except KeyError:
         cost = -1
-    print(f"{task.__name__} took {cost} seconds")
+    print(f"Time elapsed in {task.__name__} {task_id} is {cost} seconds")
 
 
 @app.route("/", methods=["GET"])
@@ -37,7 +37,7 @@ def index():
     return jsonify(message="Hello timetravelers")
 
 
-@app.route("/kmeans", methods=["GET"])
-def kmeans():
-    run_kmeans.delay()
+@app.route("/kmeans/<s>/<c>", methods=["GET"])
+def kmeans(s, c):
+    run_kmeans.delay(int(s), int(c))
     return jsonify(message="started")
